@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.os.UserHandle;
 import android.os.Looper;
 import android.os.Message;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.telephony.NetworkRegistrationInfo;
@@ -106,6 +107,8 @@ public class MobileSignalController extends SignalController<
     private ImsManager mImsManager;
     private ImsManager.Connector mImsManagerConnector;
     private boolean mVolteIcon = true;
+    // 4G instead of LTE
+    private boolean mShow4GUserConfig;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -172,6 +175,30 @@ public class MobileSignalController extends SignalController<
                 }
             }
         };
+        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
+        settingsObserver.observe();
+    }
+
+    protected class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+           ContentResolver resolver = mContext.getContentResolver();
+           resolver.registerContentObserver(Settings.System.getUriFor(
+                  Settings.System.SHOW_FOURG),
+                  false, this, UserHandle.USER_ALL);
+           updateSettings();
+        }
+
+        /*
+         *  @hide
+         */
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            updateSettings();
+        }
     }
 
     @Override
@@ -226,6 +253,13 @@ public class MobileSignalController extends SignalController<
             Log.d(mTag, "unable to remove callback.");
         }
     }
+    private void updateSettings() {
+        ContentResolver resolver = mContext.getContentResolver();
+        mShow4GUserConfig = Settings.System.getIntForUser(resolver,
+                Settings.System.SHOW_FOURG, 0, UserHandle.USER_CURRENT) == 1;
+        mapIconSets();
+        updateTelephony();
+   }
 
     public void setConfiguration(Config config) {
         mConfig = config;
@@ -339,7 +373,7 @@ public class MobileSignalController extends SignalController<
         mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPA, hGroup);
         mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_HSPAP, hPlusGroup);
 
-        if (mConfig.show4gForLte) {
+        if (mShow4GUserConfig) {
             mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.FOUR_G);
             if (mConfig.hideLtePlus) {
                 mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE_CA,
