@@ -145,5 +145,8 @@
     <string name="status_bar_battery">Battery</string>
     <!-- Name of the volte status bar icon. -->
     <string name="status_bar_volte">VoLTE</string>
+    <!-- Smart pixels QS tile -->
+    <string name="quick_settings_smart_pixels">Smart pixels</string>
+    <string name="quick_settings_smart_pixels_on_power_save">Auto-enabled smart pixels</string>
 
 </resources>
