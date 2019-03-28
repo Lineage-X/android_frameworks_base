@@ -4620,6 +4620,16 @@ public final class Settings {
         };
 
         /**
+         * @hide
+         */
+        public static final String SMART_CHARGING = "smart_charging";
+
+        /**
+         * @hide
+         */
+        public static final String SMART_CHARGING_LEVEL = "smart_charging_level";
+
+        /**
          * These are all public system settings
          *
          * @hide
