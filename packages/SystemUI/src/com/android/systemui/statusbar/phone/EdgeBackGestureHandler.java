@@ -242,6 +242,12 @@ public class EdgeBackGestureHandler implements DisplayListener {
         updateCurrentUserResources(currentUserContext.getResources());
     }
 
+    public void setStateForBackArrowGesture() {
+        if (mEdgePanel != null) {
+            mEdgePanel.setBackArrowVisibility();
+        }
+    }
+
     public void onSettingsChanged() {
         updateEdgeHeightValue();
     }
