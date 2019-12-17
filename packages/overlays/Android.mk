@@ -27,6 +27,7 @@ LOCAL_REQUIRED_MODULES := \
 	AccentColorSluttyPinkOverlay \
 	AccentColorBlueMondayOverlay \
 	AccentColorGoldenShowerOverlay \
+	AccentColorMIUIOverlay \
 	AccentColorTealOverlay \
 	AccentColorRedOverlay \
 	AccentColorQGreenOverlay \
