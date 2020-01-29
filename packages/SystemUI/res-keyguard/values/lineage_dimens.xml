@@ -16,6 +16,8 @@
 -->
 <resources>
     <!-- Binary Clock Style -->
+
+    <dimen name="custom_clock_left_padding">50dp</dimen>
     <dimen name="binary_clock_dot_size">8dp</dimen>
     <dimen name="binary_clock_stroke_width">2dp</dimen>
     <dimen name="binary_clock_width">100dp</dimen>
