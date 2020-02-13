@@ -8634,6 +8634,7 @@ public final class Settings {
          */
         public static final String CROSS_PROFILE_CALENDAR_ENABLED =
                 "cross_profile_calendar_enabled";
+	/**
          * Enable face auto unlock on secure lock screens
          *
          * @hide
