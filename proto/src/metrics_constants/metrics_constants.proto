@@ -7430,10 +7430,14 @@ message MetricsEvent {
     // CATEGORY: QUICK_SETTINGS
     QS_DATA_SWITCH = 1751;
     SETTINGS_AWARE_DISPLAY = 1750;
+
     // ---- End Q Constants, all Q constants go above this line ----
     // Add new aosp constants above this line.
     // END OF AOSP CONSTANTS
     // Lineage category
     LINEAGE = 2000;
+
+    // Panel for Mobile Data
+    PANEL_MOBILE_DATA = 2002;
   }
 }
