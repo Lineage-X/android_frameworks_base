@@ -4583,6 +4583,14 @@ public final class Settings {
          */
         public static final String ENABLE_GAMING_MODE = "enable_gaming_mode";
 
+        /** Width of the navigation handle.
+         *  @hide
+         */
+        public static final String NAVIGATION_HANDLE_WIDTH = "navigation_handle_width";
+
+        /** @hide */
+        private static final Validator NAVIGATION_HANDLE_WIDTH_VALIDATOR = ANY_INTEGER_VALIDATOR;
+
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -4648,8 +4656,9 @@ public final class Settings {
             DISPLAY_COLOR_MODE,
             ALARM_ALERT,
             NOTIFICATION_LIGHT_PULSE,
-            GESTURE_PILL_TOGGLE
+            GESTURE_PILL_TOGGLE,
             BACK_GESTURE_HEIGHT,
+            NAVIGATION_HANDLE_WIDTH,
         };
 
         /**
@@ -4771,6 +4780,7 @@ public final class Settings {
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(GESTURE_PILL_TOGGLE);
             PRIVATE_SETTINGS.add(BACK_GESTURE_HEIGHT);
+            PRIVATE_SETTINGS.add(NAVIGATION_HANDLE_WIDTH);
         }
 
         /**
@@ -4868,6 +4878,7 @@ public final class Settings {
                     ACCELEROMETER_ROTATION_ANGLES_VALIDATOR);
             VALIDATORS.put(GESTURE_PILL_TOGGLE, GESTURE_PILL_TOGGLE_VALIDATOR);
             VALIDATORS.put(BACK_GESTURE_HEIGHT, BACK_GESTURE_HEIGHT_VALIDATOR);
+            VALIDATORS.put(NAVIGATION_HANDLE_WIDTH, NAVIGATION_HANDLE_WIDTH_VALIDATOR);
         }
 
         /**
