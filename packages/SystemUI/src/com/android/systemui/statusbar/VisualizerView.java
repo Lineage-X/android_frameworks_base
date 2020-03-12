@@ -198,7 +198,7 @@ public class VisualizerView extends View
     @Override
     public void onTuningChanged(String key, String newValue) {
         if (LOCKSCREEN_VISUALIZER_ENABLED.equals(key)) {
-            mVisualizerEnabled = TunerService.parseIntegerSwitch(newValue, true);
+            mVisualizerEnabled = TunerService.parseIntegerSwitch(newValue, false);
             checkStateChanged();
             updateViewVisibility();
         }
