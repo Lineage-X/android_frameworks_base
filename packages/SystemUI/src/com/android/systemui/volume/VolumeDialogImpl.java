@@ -429,6 +429,12 @@ public class VolumeDialogImpl implements VolumeDialog,
         }
     }
 
+    private void updateAllActiveRows() {
+        int N = mRows.size();
+        for (int i = 0; i < N; i++)
+            updateVolumeRowH(mRows.get(i));
+    }
+
     private VolumeRow getActiveRow() {
         for (VolumeRow row : mRows) {
             if (row.stream == mActiveStream) {
@@ -526,10 +532,9 @@ public class VolumeDialogImpl implements VolumeDialog,
     private void cleanExpandRows() {
         for(int i = mRows.size() - 1; i >= 0; i--) {
             final VolumeRow row = mRows.get(i);
-            if ((row.stream == AudioManager.STREAM_RING ||
-                    row.stream == AudioManager.STREAM_ALARM) && row.stream != mActiveStream) {
-                Util.setVisOrGone(row.view, /* vis */ false);
-            }
+            if (row.stream == AudioManager.STREAM_RING ||
+                    row.stream == AudioManager.STREAM_ALARM)
+                removeRow(row);
         }
     }
 
@@ -547,41 +552,13 @@ public class VolumeDialogImpl implements VolumeDialog,
                     true /* dismissShade */);
             return true;
         });
-
-        // We need to track the ally stream only if it's not equal
-        // to our "hardcoded" extra elements.
-        int watchAllyStream;
-        if (mActiveStream != AudioManager.STREAM_RING
-                || mActiveStream != AudioManager.STREAM_ALARM) {
-            watchAllyStream = mActiveStream;
-        } else {
-            watchAllyStream = -1;
-        }
-
         mExpandRows.setOnClickListener(v -> {
             if(!mExpanded) {
-                VolumeRow row = findRow(AudioManager.STREAM_RING);
-                if (row != null) {
-                    Util.setVisOrGone(row.view, /* vis */ true);
-                    updateVolumeRowTintH(row,
-                            /* isActive */ row.stream == mActiveStream);
-                }
-                row = findRow(AudioManager.STREAM_ALARM);
-                if (row != null) {
-                    Util.setVisOrGone(row.view, /* vis */ true);
-                    updateVolumeRowTintH(row,
-                            /* isActive */ row.stream == mActiveStream);
-                }
-                // Track ally stream, basically whatever is active next
-                // to the default one (media stream). e.g call stream.
-                if (watchAllyStream != -1) {
-                    row = findRow(watchAllyStream);
-                    if (row != null) {
-                        Util.setVisOrGone(row.view, /* vis */ true);
-                        updateVolumeRowTintH(row,
-                            /* isActive */ row.stream == mActiveStream);
-                    }
-                }
+                addRow(AudioManager.STREAM_RING,
+                        R.drawable.ic_volume_ringer, R.drawable.ic_volume_ringer_mute, true, false);
+                addRow(AudioManager.STREAM_ALARM,
+                        R.drawable.ic_volume_alarm, R.drawable.ic_volume_alarm_mute, true, false);
+                updateAllActiveRows();
                 mExpanded = true;
             } else {
                 cleanExpandRows();
@@ -865,8 +842,6 @@ public class VolumeDialogImpl implements VolumeDialog,
                 .setInterpolator(new SystemUIInterpolators.LogAccelerateInterpolator())
                 .withEndAction(() -> mHandler.postDelayed(() -> {
                     mDialog.dismiss();
-                    mExpanded = false;
-                    mExpandRows.setExpanded(mExpanded);
                     tryToRemoveCaptionsTooltip();
                 }, 50));
         animator.translationX(getAnimatorX());
@@ -879,6 +854,10 @@ public class VolumeDialogImpl implements VolumeDialog,
                 mSafetyWarning.dismiss();
             }
         }
+
+        cleanExpandRows();
+        mExpanded = false;
+        mExpandRows.setExpanded(mExpanded);
     }
 
     private boolean showActiveStreamOnly() {
@@ -1237,7 +1216,7 @@ public class VolumeDialogImpl implements VolumeDialog,
         final int alpha = useActiveColoring
                 ? Color.alpha(tint.getDefaultColor())
                 : getAlphaAttr(android.R.attr.secondaryContentAlpha);
-        if (tint == row.cachedTint && mExpanded) return;
+        if (tint == row.cachedTint) return;
         row.slider.setProgressTintList(tint);
         row.slider.setThumbTintList(tint);
         row.slider.setProgressBackgroundTintList(tint);
