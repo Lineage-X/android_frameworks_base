@@ -71,20 +71,11 @@ public class TunerServiceImpl extends TunerService {
 
     // Things that use the tunable infrastructure but are now real user settings and
     // shouldn't be reset with tuner settings.
+    // Do not add Lineage specific keys here as they are blacklisted automatically
     private static final String[] RESET_BLACKLIST = new String[] {
-            BatteryMeterView.STATUS_BAR_BATTERY_STYLE,
-            Clock.CLOCK_STYLE,
-            ClockController.CLOCK_POSITION,
-            EdgeBackGestureHandler.KEY_EDGE_LONG_SWIPE_ACTION,
-            NavigationBarView.NAVIGATION_BAR_MENU_ARROW_KEYS,
-            NotificationPanelView.DOUBLE_TAP_SLEEP_GESTURE,
-            NotificationPanelView.STATUS_BAR_QUICK_QS_PULLDOWN,
-            NotificationStackScrollLayout.LOCKSCREEN_TRANSLUCENT_NOTIFICATIONS_BG_ENABLED,
             QSTileHost.TILES_SETTING,
             Settings.Secure.DOZE_ALWAYS_ON,
-            StatusBar.FORCE_SHOW_NAVBAR,
             StatusBar.SCREEN_BRIGHTNESS_MODE,
-            StatusBar.STATUS_BAR_BRIGHTNESS_CONTROL
     };
 
     private final Observer mObserver = new Observer();
@@ -160,6 +151,10 @@ public class TunerServiceImpl extends TunerService {
                     () -> clearAllFromUser(user), 5000);
         }
         setValue(TUNER_VERSION, newVersion);
+    }
+
+    private boolean isLineageSetting(String key) {
+        return isLineageGlobal(key) || isLineageSystem(key) || isLineageSecure(key);
     }
 
     private boolean isLineageGlobal(String key) {
@@ -368,7 +363,7 @@ public class TunerServiceImpl extends TunerService {
         mContext.sendBroadcast(intent);
 
         for (String key : mTunableLookup.keySet()) {
-            if (ArrayUtils.contains(RESET_BLACKLIST, key)) {
+            if (ArrayUtils.contains(RESET_BLACKLIST, key) || isLineageSetting(key)) {
                 continue;
             }
             setValue(key, null);
