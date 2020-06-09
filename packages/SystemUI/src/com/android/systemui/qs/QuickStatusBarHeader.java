@@ -423,16 +423,6 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mSystemIconsView.setLayoutParams(mSystemIconsView.getLayoutParams());
 
         if (mIsQuickQsBrightnessEnabled) {
-            // Offset container margin to align quick QS brightness bar with QS brightness bar.
-            RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
-                    mQuickQsBrightness.getLayoutParams();
-            lpQuickQsBrightness.setMargins(
-                    resources.getDimensionPixelSize(R.dimen.notification_side_paddings)
-                            - resources.getDimensionPixelSize(R.dimen.status_bar_padding_start),
-                    0, resources.getDimensionPixelSize(R.dimen.notification_side_paddings)
-                            - resources.getDimensionPixelSize(R.dimen.status_bar_padding_end),
-                    0);
-            mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
             if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
                 mQuickQsBrightness.findViewById(R.id.brightness_icon).setVisibility(View.VISIBLE);
@@ -556,10 +546,15 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 cutout, getDisplay());
         if (padding == null) {
             mSystemIconsView.setPaddingRelative(
-                    getResources().getDimensionPixelSize(R.dimen.status_bar_padding_start), 0,
-                    getResources().getDimensionPixelSize(R.dimen.status_bar_padding_end), 0);
+                    getResources().getDimensionPixelSize(R.dimen.status_bar_padding_start),
+                    getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top),
+                    getResources().getDimensionPixelSize(R.dimen.status_bar_padding_end),
+                    0);
         } else {
-            mSystemIconsView.setPadding(padding.first, 0, padding.second, 0);
+            mSystemIconsView.setPadding(
+                    padding.first,
+                    getResources().getDimensionPixelSize(R.dimen.status_bar_padding_top),
+                    padding.second, 0);
 
         }
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mSpace.getLayoutParams();
@@ -577,6 +572,12 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
         mSpace.setLayoutParams(lp);
         setChipVisibility(mPrivacyChip.getVisibility() == View.VISIBLE);
+        // Offset container padding to align with QS brightness bar.
+        final int sp = getResources().getDimensionPixelSize(R.dimen.notification_side_paddings);
+        RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
+                mQuickQsBrightness.getLayoutParams();
+        lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 0, sp - mPaddingRight, 0);
+        mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
         return super.onApplyWindowInsets(insets);
     }
 
